@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幾A幾B遊戲</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>幾A幾B遊戲</h1>
+        <button id="startBtn">開始遊戲</button>
+        <div id="gameArea" class="game-area" style="display:none;">
+            <h2>請選擇 4 個數字（每個數字不可重複）：</h2>
+            <input type="number" id="guess1" class="guess" min="0" max="9">
+            <input type="number" id="guess2" class="guess" min="0" max="9">
+            <input type="number" id="guess3" class="guess" min="0" max="9">
+            <input type="number" id="guess4" class="guess" min="0" max="9">
+            <button id="submitBtn">提交猜測</button>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
