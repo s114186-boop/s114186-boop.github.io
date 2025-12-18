@@ -42,6 +42,13 @@ input {
     text-align: center;
 }
 
+#guessInput {
+    width: 250px;
+    padding: 10px;
+    font-size: 18px;
+    text-align: center;
+}
+
 #result {
     margin-top: 20px;
     font-size: 18px;
