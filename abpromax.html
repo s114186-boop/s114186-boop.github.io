@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>幾A幾B｜全程超嘲諷版</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: auto;
+            background: #222;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255,0,0,0.3);
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #c0392b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #e74c3c;
+        }
+
+        #guessInput {
+            width: 280px;
+            padding: 10px;
+            font-size: 18px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #result {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff7675;
+        }
+
+        #history {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        #history li {
+            background-color: #333;
+            margin: 6px 0;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🤡 幾A幾B（全程超嘲諷版）</h1>
+
+    <button id="startBtn">開始遊戲</button>
+
+    <div id="gameArea" style="display:none;">
+        <p>請輸入 4 個不重複的數字<br>
+        👉 數字之間請用 <strong>空格</strong> 隔開（例如：1 3 5 7）</p>
+
+        <input type="text" id="guessInput" placeholder="1 3 5 7">
+        <br>
+        <button id="submitBtn">送出（準備被嘲諷）</button>
+
+        <div id="result"></div>
+
+        <h3>📜 嘲諷紀錄</h3>
+        <ul id="history"></ul>
+    </div>
+</div>
+
+<script>
+    let secretNumbers = [];
+    let attempts = 0;
+
+    const taunts = [
+        "🤡 你是用骰子在選數字的嗎？",
+        "😈 這答案一看就知道沒思考。",
+        "💀 電腦：你要不要先去看一下規則？",
+        "😂 這不是猜，是在表演。",
+        "🧠 腦袋今天請假了？",
+        "🔥 每多猜一次，你的尊嚴就少一點。",
+        "👻 正確答案已經開始同情你了。",
+        "☠️ 這組數字是在侮辱這個遊戲。",
+        "😏 說真的，你有想贏嗎？"
+    ];
+
+    document.getElementById("startBtn").addEventListener("click", startGame);
+    document.getElementById("submitBtn").addEventListener("click", checkGuess);
+
+    function startGame() {
+        secretNumbers = generateRandomNumbers();
+        attempts = 0;
+
+        document.getElementById("gameArea").style.display = "block";
+        document.getElementById("guessInput").value = "";
+        document.getElementById("result").textContent = "";
+        document.getElementById("history").innerHTML = "";
+
+        console.log("答案（測試用）：", secretNumbers);
+    }
+
+    function generateRandomNumbers() {
+        let nums = [];
+        while (nums.length < 4) {
+            let n = Math.floor(Math.random() * 10);
+            if (!nums.includes(n)) nums.push(n);
+        }
+        return nums;
+    }
+
+    function checkGuess() {
+        let input = document.getElementById("guessInput").value.trim();
+        let guess = input.split(" ").map(Number);
+
+        if (guess.length !== 4 || guess.some(isNaN)) {
+            alert("請輸入 4 個數字並以空格隔開");
+            return;
+        }
+
+        if (new Set(guess).size !== 4) {
+            alert("數字不可重複");
+            return;
+        }
+
+        attempts++;
+
+        let result = compare(secretNumbers, guess);
+        let text = `${result.A}A ${result.B}B`;
+
+        let randomTaunt = taunts[Math.floor(Math.random() * taunts.length)];
+        let bonus = "";
+
+        if (result.A === 0) bonus = " 🧨 連一個位置都沒對，你在幹嘛？";
+        if (result.A === 3) bonus = " 😈 只差一個，但我猜你還會再錯。";
+        if (result.B === 4) bonus = " 🤡 數字全對但全錯位，這也是天賦。";
+
+        if (result.A !== 4) {
+            text += "　" + randomTaunt + bonus;
+        }
+
+        document.getElementById("result").textContent = text;
+        addHistory(guess, result, text);
+
+        if (result.A === 4) {
+            setTimeout(() => {
+                alert("🎉 4A！你終於猜對了。\n😏 老實說，我沒想到你真的辦得到。");
+                startGame();
+            }, 400);
+        }
+
+        document.getElementById("guessInput").value = "";
+    }
+
+    function compare(secret, guess) {
+        let A = 0, B = 0;
+        for (let i = 0; i < 4; i++) {
+            if (secret[i] === guess[i]) A++;
+            else if (secret.includes(guess[i])) B++;
+        }
+        return { A, B };
+    }
+
+    function addHistory(guess, result, text) {
+        let li = document.createElement("li");
+        li.textContent = `第 ${attempts} 次：${guess.join(" ")} → ${text}`;
+        document.getElementById("history").appendChild(li);
+    }
+</script>
+
+</body>
+</html>
