@@ -6,13 +6,15 @@ let attempts = 0;
 document.getElementById('startBtn').addEventListener('click', startGame);
 
 function startGame() {
-    // 產生4個不重複的數字
     secretNumbers = generateRandomNumbers();
     document.getElementById('gameArea').style.display = 'block';
     document.getElementById('result').textContent = '';
+    document.getElementById('guessInput').value = "";
     attempts = 0;
-    console.log("Secret numbers are:", secretNumbers);  // 方便測試，會顯示在console裡
+
+    console.log("答案（測試用）：", secretNumbers);
 }
+
 
 // 生成4個不重複的隨機數字
 function generateRandomNumbers() {
@@ -30,16 +32,20 @@ function generateRandomNumbers() {
 document.getElementById('submitBtn').addEventListener('click', checkGuess);
 
 function checkGuess() {
-    let guess = [
-        parseInt(document.getElementById('guess1').value),
-        parseInt(document.getElementById('guess2').value),
-        parseInt(document.getElementById('guess3').value),
-        parseInt(document.getElementById('guess4').value),
-    ];
+    let input = document.getElementById('guessInput').value.trim();
 
-    // 檢查輸入是否合法
-    if (guess.some(isNaN) || new Set(guess).size !== 4) {
-        alert("請輸入4個不重複的數字");
+    // 依空格切割
+    let guess = input.split(" ").map(Number);
+
+    // 檢查是否為 4 個數字
+    if (guess.length !== 4 || guess.some(isNaN)) {
+        alert("請輸入 4 個數字，並以空格隔開");
+        return;
+    }
+
+    // 檢查是否重複
+    if (new Set(guess).size !== 4) {
+        alert("數字不可重複");
         return;
     }
 
@@ -47,14 +53,15 @@ function checkGuess() {
     let result = compareNumbers(secretNumbers, guess);
     displayResult(result);
 
-    // 判斷是否贏得遊戲
+    // 勝利判斷
     if (result.A === 4) {
         setTimeout(() => {
-            alert('恭喜，你贏了！');
-            startGame(); // 重新開始遊戲
-        }, 500);
+            alert("🎉 4A！完全正確，你贏了！");
+            startGame();
+        }, 300);
     }
 }
+
 
 // 比較玩家猜測與正確數字
 function compareNumbers(secret, guess) {
